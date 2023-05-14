@@ -1,0 +1,53 @@
+﻿@page "/"
+
+<div class="container d-flex flex-column vh-100">
+    @if (Messages.Count == 0)
+    {
+        <div class="text-center">
+            <h3>Welcome to CsharpBot !</h3>
+            <p>Welcome to the C# learning assistant, I'm here to help you master c# programming.</p>
+        </div>
+    }
+
+    <div class="flex-grow-1">
+        @foreach (var message in Messages)
+        {
+            <div class="row p-2">
+                <div class="col-1 rounded-circle bg-dark-subtle text-center m-2 p-0"
+                 style="width:50px;height:50px;">
+                    <span class="bi fs-2 @(message.IsUser ? "bi-person-fill" : "bi-robot")"></span>
+                </div>
+                <div class="col-11 rounded p-3 shadow-sm @(message.IsUser ? "text-bg-primary" : "text-bg-light")">
+                    @if (message.IsUser)
+                    {
+                        @message.content
+                    }
+                    else
+                    {
+                        @((MarkupString)message.content)
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="sticky-bottom w-50 p-3 rounded mx-auto">
+        @if (_isSendingMessage)
+        {
+            <div class="text-center">
+                <div class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        }
+       <div class="input-group">
+            <button class="btn btn-primary" @onclick="ClearConversation">
+                <span class="bi bi-eraser"></span>
+            </button>
+            <textarea rows="2" class="form-control" placeholder="Ask your question..."
+                      @bind-value="_userQuestion" @bind-value:event="oninput" @onkeypress="HandleKeyPress"
+                      disabled="@_isSendingMessage">
+        </textarea>
+       </div>
+    </div>
+</div>
